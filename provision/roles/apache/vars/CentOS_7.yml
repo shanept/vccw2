@@ -1,0 +1,17 @@
+---
+
+apache_user: "{{ ansible_env.USER | default( 'ubuntu' ) }}"
+
+apache_service_name: httpd
+
+apache_packages:
+- httpd
+- mod_fcgid
+
+apache_config: /etc/httpd/conf/httpd.conf
+
+apache_site_conf_path: /etc/httpd/conf.d
+
+apache_modules_path: modules
+
+apache_modules_conf_path: /etc/httpd/conf.modules.d

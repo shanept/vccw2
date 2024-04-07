@@ -1,0 +1,75 @@
+---
+
+# Load OS-specific variables
+- name: Include OS-dependent variables
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ ansible_facts.distribution }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.distribution }}.yml"
+      - "{{ ansible_facts.os_family }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.os_family }}.yml"
+      skip: true
+  tags: always
+
+# Install Apache2
+- name: Download Apache2
+  become: yes
+  action: >
+    {{ ansible_pkg_mgr }} name={{ apache_packages | mandatory }} state=present update_cache=yes
+
+- name: Enable apache2 modules
+  become: yes
+  template:
+    src: templates/00-modules.conf
+    dest: "{{ apache_modules_conf_path }}/00-vccw.conf"
+  notify:
+    - restart apache
+
+- name: Setup apache2 service
+  become: yes
+  service:
+    name: "{{ apache_service_name | mandatory }}"
+    enabled: true
+    state: started
+
+- name: Create SSL dir
+  become: yes
+  file:
+    path: /etc/apache2/ssl
+    state: directory
+
+# Create SSL Keys
+- name: Create SSL keys
+  become: yes
+  command: openssl req -batch -new -x509 -newkey rsa:2048 -nodes -sha256 \
+    -subj /CN=*.{{ vccw.hostname }}/O=oreore -days 3650 \
+    -keyout /etc/apache2/ssl/{{ vccw.hostname }}.key \
+    -out /etc/apache2/ssl/{{ vccw.hostname }}.crt
+
+- name: "Replacing the Apache User"
+  become: yes
+  replace:
+    dest: /etc/apache2/envvars
+    regexp: APACHE_RUN_USER=.*
+    replace: "APACHE_RUN_USER={{ apache_user }}"
+  notify:
+    - restart apache
+
+- name: "Replacing the Apache Group"
+  become: yes
+  replace:
+    dest: /etc/apache2/envvars
+    regexp: APACHE_RUN_GROUP=.*
+    replace: "APACHE_RUN_GROUP={{ apache_user }}"
+  notify:
+    - restart apache
+
+- name: "Remove index.html from document root"
+  become: yes
+  file:
+    path: "{{ vccw.document_root }}/index.html"
+    state: absent
+
+- import_tasks: configuration.yml

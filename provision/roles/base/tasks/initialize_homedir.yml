@@ -1,0 +1,38 @@
+---
+
+# Setup bash
+- name: Place a ~/.bash_profile
+  become: no
+  template:
+    src: templates/.bash_profile
+    dest: "{{ ansible_env.HOME }}/.bash_profile"
+
+- name: Place a ~/.bash.d/
+  become: no
+  file:
+    path: "{{ ansible_env.HOME }}/.bash.d"
+    state: directory
+
+- name: Place a ~/.bash.d/vccw.sh
+  become: no
+  template:
+    src: templates/vccw.sh
+    dest: "{{ ansible_env.HOME }}/.bash.d/vccw.sh"
+
+- name: Place ~/.my.cnf
+  become: no
+  template:
+    src: templates/.my.cnf
+    dest: "{{ ansible_env.HOME }}/.my.cnf"
+
+- name: Place a ~/.gemrc
+  become: no
+  template:
+    src: templates/.gemrc
+    dest: "{{ ansible_env.HOME }}/.gemrc"
+
+- name: Place a ~/.npmrc
+  become: no
+  template:
+    src: templates/.npmrc
+    dest: "{{ ansible_env.HOME }}/.npmrc"

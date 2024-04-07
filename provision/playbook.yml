@@ -1,0 +1,10 @@
+---
+
+- hosts: all
+  roles:
+  - role: 'base'
+  - role: 'apache'
+  - role: 'mysql'
+  - role: 'php'
+  - role: 'components'
+  - role: 'wordpress'

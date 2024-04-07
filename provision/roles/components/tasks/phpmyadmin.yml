@@ -1,0 +1,22 @@
+---
+
+# Install PHPMyAdmin
+- name: Install PHPMyAdmin
+  become: yes
+  action: >
+    {{ ansible_pkg_mgr }} name={{ phpmyadmin_packages | mandatory }} state=present update_cache=yes
+
+- name: Symlink PHPMyAdmin VirtualHost
+  become: yes
+  file:
+    src: /etc/phpmyadmin/apache.conf
+    dest: /etc/apache2/conf-available/phpmyadmin.conf
+    state: link
+  notify:
+    - restart apache
+
+- name: Enable PHPMyAdmin VirtualHost
+  become: yes
+  command: a2enconf phpmyadmin.conf
+  notify:
+    - restart apache

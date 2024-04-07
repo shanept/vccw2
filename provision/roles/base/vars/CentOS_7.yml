@@ -1,0 +1,10 @@
+---
+
+base_packages:
+- git
+- subversion
+- ruby
+- gcc
+- gcc-c++
+- make
+- "{% if ansible_python.version.major|int == 3 %}python36-pymysql{% else %}python2-pymysql{% endif %}"

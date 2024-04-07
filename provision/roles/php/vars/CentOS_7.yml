@@ -1,0 +1,19 @@
+---
+
+php_service_name: "php{{ php_version | replace('.', '') }}-php-fpm"
+
+php_packages:
+ - php{{ php_version | replace('.', '') }}
+ - php{{ php_version | replace('.', '') }}-php-mysqlnd
+ - php{{ php_version | replace('.', '') }}-php-cli
+# - php{{ php_version | replace('.', '') }}-php-curl
+ - php{{ php_version | replace('.', '') }}-php-gd
+ - php{{ php_version | replace('.', '') }}-php-fpm
+ - php{{ php_version | replace('.', '') }}-php-mbstring
+ - php{{ php_version | replace('.', '') }}-php-xml
+# - php{{ php_version | replace('.', '') }}-php-pcov
+# - php{{ php_version | replace('.', '') }}-php-xdebug
+
+php_ini: "/etc/opt/remi/php{{ php_version | replace('.', '') }}/php.d/99-vccw.ini"
+php_ini_cli: "{{ php_ini }}"
+php_fpm_conf: "/etc/opt/remi/php{{ php_version | replace('.', '') }}/php-fpm.conf"

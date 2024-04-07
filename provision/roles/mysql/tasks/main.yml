@@ -1,0 +1,47 @@
+---
+
+# Load OS-specific variables
+- name: Include OS-dependent variables
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ ansible_facts.distribution }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.distribution }}.yml"
+      - "{{ ansible_facts.os_family }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.os_family }}.yml"
+      skip: true
+  tags: always
+
+# Install MySQL
+- name: Install MySQL Server
+  become: yes
+  action: >
+    {{ ansible_pkg_mgr }} name={{ mysql_packages | mandatory}} state=present update_cache=yes
+
+- name: Start MySQL
+  become: yes
+  service:
+    name: "{{ mysql_service_name | mandatory }}"
+    enabled: true
+    state: started
+
+- name: Allow remote connections to MySQL
+  become: yes
+  lineinfile:
+    dest: "/etc/mysql/mysql.conf.d/mysqld.cnf"
+    backrefs: yes
+    regexp: '^(bind-address)'
+    line: '# \1'
+  notify:
+    - restart mysql
+
+- name: Allow socket connections to MySQL
+  become: yes
+  lineinfile:
+    dest: "/etc/mysql/mysql.conf.d/mysqld.cnf"
+    backrefs: yes
+    regexp: '^(# )?\s*socket\s*='
+    line: "socket = {{ mysql_socket }}"
+  notify:
+    - restart mysql

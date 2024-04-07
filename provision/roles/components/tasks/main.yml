@@ -1,0 +1,41 @@
+---
+
+# Load OS-specific variables
+- name: Include OS-dependent variables
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ ansible_facts.distribution }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.distribution }}.yml"
+      - "{{ ansible_facts.os_family }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.os_family }}.yml"
+      skip: true
+  tags: always
+
+- name: Install Wordmove
+  become: no
+  gem:
+    name: "wordmove"
+    user_install: yes
+  ignore_errors: yes
+
+- name: Install Ruby gems
+  become: no
+  gem:
+    name: "{{ item }}"
+    user_install: yes
+  when: item != "wordmove"
+  with_items: "{{ vccw.ruby_gems | default([]) }}"
+  ignore_errors: yes
+
+- name: Install npm packages
+  become: no
+  npm:
+    name: "{{ item }}"
+    global: yes
+    executable: /usr/bin/npm
+  with_items: "{{ vccw.npms | default([]) }}"
+  ignore_errors: yes
+
+- import_tasks: phpmyadmin.yml

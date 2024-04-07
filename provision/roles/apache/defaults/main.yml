@@ -1,0 +1,7 @@
+---
+
+apache_user: "{{ undef(hint='You must provide an apache_user variable in the distribution\\'s vars file.') }}"
+
+apache_service_name: "{{ undef(hint='You must provide an apache_service_name variable in the distribution\\'s vars file.') }}"
+
+apache_packages: "{{ undef(hint='You must provide an apache_packages variable in the distribution\\'s vars file.') }}"

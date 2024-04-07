@@ -1,0 +1,15 @@
+---
+
+- name: restart php-fpm
+  become: yes
+  ansible.builtin.service:
+      name: "php{{ php_version }}-fpm"
+      state: restarted
+
+- name: yum update
+  become: yes
+  ansible.builtin.command: yum update
+
+- name: yum clean all
+  become: yes
+  ansible.builtin.command: yum clean all

@@ -1,0 +1,27 @@
+---
+
+# Setup WordPress coding standards
+- name: Check the `phpcs` exists.
+  shell: bash -lc 'phpcs --help &> /dev/null; echo $?'
+  register: is_phpcs
+
+- name: Setup the WordPress coding standard
+  shell: /bin/bash -lc "phpcs --config-set installed_paths {{ ansible_env.HOME }}/.composer/vendor/wp-coding-standards/wpcs"
+  when: is_phpcs.stdout == "0"
+
+# WordPress i18n tools
+- name: Checkout the WordPress i18n Tools
+  subversion:
+    repo: http://i18n.svn.wordpress.org/tools/trunk/
+    dest: "{{ ansible_env.HOME }}/.wp-i18n/"
+  ignore_errors: yes
+  when: vccw.wp_i18n_tools
+
+# Remove unused files if exists
+- name: Remove unused files if exists
+  become: yes
+  file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: absent
+  with_items:
+    - .wget-hsts

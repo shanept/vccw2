@@ -1,0 +1,3 @@
+---
+
+php_version: "{{ vccw.php_version | default(8.2) }}"

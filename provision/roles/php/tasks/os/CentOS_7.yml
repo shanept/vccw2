@@ -1,0 +1,17 @@
+---
+
+- name: Add PHP Repository
+  become: yes
+  ansible.builtin.yum_repository:
+    name: REMI
+    description: REMI PHP repository
+    baseurl: http://rpms.remirepo.net/enterprise/7/remi/{{ ansible_facts.architecture }}/
+    mirrorlist: http://cdn.remirepo.net/enterprise/7/remi/mirror
+    gpgcheck: yes
+    gpgkey: https://rpms.remirepo.net/RPM-GPG-KEY-remi
+    state: present
+    enabled: yes
+  notify:
+    - yum update
+    - yum clean all
+  when: ansible_facts.os_family == "RedHat"

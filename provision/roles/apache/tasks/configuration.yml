@@ -1,0 +1,43 @@
+---
+
+- name: Place apache site configuration
+  become: yes
+  template:
+    src: templates/site.conf
+    dest: "{{ apache_site_conf_path }}/default.conf"
+  notify:
+    - restart apache
+
+- name: Cleanup CentOS 7 httpd configuration
+  become: yes
+  file:
+    path: /etc/httpd/conf.d/welcome.conf
+    state: absent
+  when: ansible_facts.os_family == "RedHat"
+
+- name: "Disable keepalive"
+  become: yes
+  replace:
+    dest: "{{ apache_config }}"
+    regexp: KeepAlive .*
+    replace: "KeepAlive Off"
+  notify:
+    - restart apache
+
+- name: "Setup timeout"
+  become: yes
+  replace:
+    dest: "{{ apache_config }}"
+    regexp: Timeout .*
+    replace: "Timeout 10"
+  notify:
+    - restart apache
+
+- name: "Disable SendFile"
+  become: yes
+  replace:
+    dest: "{{ apache_config }}"
+    regexp: EnableSendfile .*
+    replace: "EnableSendfile off"
+  notify:
+    - restart apache

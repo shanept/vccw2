@@ -1,0 +1,24 @@
+---
+
+# Load OS-specific variables
+- name: Include OS-dependent variables
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+      - "{{ ansible_facts.distribution }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.distribution }}.yml"
+      - "{{ ansible_facts.os_family }}_{{ ansible_facts.distribution_major_version }}.yml"
+      - "{{ ansible_facts.os_family }}.yml"
+      skip: true
+  tags: always
+
+# Install dependencies
+- name: Install dependencies
+  become: yes
+  action: >
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items: "{{ base_packages }}"
+
+
+- import_tasks: initialize_homedir.yml

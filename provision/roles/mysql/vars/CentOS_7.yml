@@ -1,0 +1,6 @@
+---
+
+mysql_service_name: mariadb
+
+mysql_packages:
+ - mariadb-server

@@ -1,0 +1,41 @@
+
+# Install WP-CLI
+- name: Install the WP-CLI
+  become: yes
+  get_url:
+    url: "{{ wp_cli_bin_url }}"
+    dest: /usr/local/bin/wp
+    mode: 0755
+    force: yes
+
+- name: Create a ~/.wp-cli/
+  file:
+    path: "{{ ansible_env.HOME }}/.wp-cli/"
+    state: directory
+  notify:
+    - wp-cli-config
+
+- name: Install WP-CLI packages
+  become: no
+  shell: /bin/bash -lc "wp package install '{{ item }}'"
+  with_items: "{{ vccw.wp_cli_packages | default([]) }}"
+  ignore_errors: yes
+
+- name: Setup a bash completion for the WP-CLI
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash
+    dest: "{{ ansible_env.HOME }}/.bash.d/wp-completion.sh"
+    force: yes
+
+- name: Create `wp-cli` dir
+  become: yes
+  file:
+    path: "{{ vccw.vagrant_dir }}/wp-cli"
+    state: directory
+
+- name: Place a `wp browse` command.
+  template:
+    src: templates/browse-command.php
+    dest: "{{ vccw.vagrant_dir }}/wp-cli/browse-command.php"
+  notify:
+    - wp-cli-local-config

@@ -1,0 +1,39 @@
+---
+
+# Install Composer libraries
+- name: Download the Composer
+  become: yes
+  get_url:
+    url: https://getcomposer.org/installer
+    dest: /tmp/composer-setup.php
+    mode: 0755
+    force: yes
+
+- name: Run the Composer v{{ vccw.composer_version }} installer
+  become: yes
+  shell: "php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer --version={{ vccw.composer_version }}"
+  when: vccw.composer_version != "latest"
+
+- name: Run the Composer installer for the latest version
+  become: yes
+  shell: "php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer"
+  when: vccw.composer_version == "latest"
+
+- name: Create a ~/.composer/
+  file:
+    path: "{{ ansible_env.HOME }}/.composer/"
+    state: directory
+
+- name: Place a composer.json
+  template:
+    src: templates/composer.json
+    dest: "{{ ansible_env.HOME }}/.composer/composer.json"
+    force: no
+
+- name: Install Composer libraries
+  composer:
+    command: require
+    arguments: "{{ item }}"
+    working_dir: "{{ ansible_env.HOME }}/.composer"
+  with_items: "{{ vccw.composers | default([]) }}"
+  ignore_errors: yes

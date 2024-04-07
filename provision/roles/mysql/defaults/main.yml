@@ -1,0 +1,6 @@
+---
+
+mysql_socket: "/var/run/mysqld/mysqld.sock"
+
+mysql_service_name: "{{ undef(hint='You must provide a mysql_service_name variable in the distribution\\'s vars file.') }}"
+mysql_packages: "{{ undef(hint='You must provide a mysql_packages variable in the distribution\\'s vars file.') }}"
