@@ -17,3 +17,5 @@ php_packages:
 php_ini: "/etc/opt/remi/php{{ php_version | replace('.', '') }}/php.d/99-vccw.ini"
 php_ini_cli: "{{ php_ini }}"
 php_fpm_conf: "/etc/opt/remi/php{{ php_version | replace('.', '') }}/php-fpm.conf"
+
+php_fpm_socket_path: "/var/run/php/php{{ php_version | replace('.', '') }}-fpm.sock"

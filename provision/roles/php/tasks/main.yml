@@ -38,12 +38,13 @@
     state: started
 
 # copy php-fpm.conf to apache configuration directory
-# - name: Enable PHP-FPM in apache2
-#   become: yes
-#   command: a2enconf php{{ php_version | mandatory }}-fpm
-#   notify:
-#     - restart apache
-#   when: ansible_facts.os_family == "Debian"
+- name: Enable PHP-FPM in apache2
+  become: yes
+  template:
+    src: templates/apache-php-fpm.conf
+    dest: "{{ apache_configs_dir }}/php-fpm.conf"
+  notify:
+   - restart apache
 
 # php config.
 - name: Update php.ini
@@ -65,23 +66,28 @@
   with_dict: "{{ vccw.php_ini }}"
   when: php_ini != php_ini_cli
 
-- name: "Updating Apache User with PHP-FPM"
+- name: "Update PHP-FPM with apache user"
   become: yes
   lineinfile:
     dest: "{{ php_fpm_conf }}"
     backrefs: yes
-    regexp: '^(;\s*)?listen\.owner\s*='
-    line: 'listen.owner = {{ apache_user }}'
+    regexp: '^(;\s*)?{{ item }}\s*='
+    line: '{{ item }} = {{ apache_user }}'
+  with_items:
+    - "user"
+    - "group"
+    - "listen.owner"
+    - "listen.group"
   notify:
     - restart php-fpm
 
-- name: "Updating Apache Group with PHP-FPM"
+- name: "Update PHP socket file location"
   become: yes
   lineinfile:
     dest: "{{ php_fpm_conf }}"
     backrefs: yes
-    regexp: '^(;\s*)?listen\.group\s*='
-    line: 'listen.group = {{ apache_user }}'
+    regexp: '^(;]s*)?listen\s*='
+    line: 'listen = {{ php_fpm_socket_path }}'
   notify:
     - restart php-fpm
 

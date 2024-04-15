@@ -64,7 +64,8 @@ db_pass: wordpress
 # Plugin's slug or url to the plugin's slug.
 #
 plugins:
-- logbook
+- debug-bar
+- query-monitor
 
 #
 # WordPress Default Theme

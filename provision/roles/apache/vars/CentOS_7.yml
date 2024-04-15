@@ -10,7 +10,9 @@ apache_packages:
 
 apache_config: /etc/httpd/conf/httpd.conf
 
-apache_site_conf_path: /etc/httpd/conf.d
+apache_configs_dir: /etc/httpd/conf.d
+
+apache_site_conf_path: "{{ apache_configs_dir }}"
 
 apache_modules_path: modules
 

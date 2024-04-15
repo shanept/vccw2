@@ -4,16 +4,20 @@ php_service_name: "php{{ php_version }}-fpm"
 
 php_packages:
  - php{{ php_version }}
- - php{{ php_version }}-mysql
  - php{{ php_version }}-cli
  - php{{ php_version }}-curl
- - php{{ php_version }}-gd
  - php{{ php_version }}-fpm
+ - php{{ php_version }}-gd
+ - php{{ php_version }}-imagick
+ - php{{ php_version }}-intl
  - php{{ php_version }}-mbstring
- - php{{ php_version }}-xml
+ - php{{ php_version }}-mysql
  - php{{ php_version }}-pcov
  - php{{ php_version }}-xdebug
+ - php{{ php_version }}-xml
 
 php_ini: /etc/php/{{ php_version }}/apache2/conf.d/99-vccw.ini
 php_ini_cli: /etc/php/{{ php_version }}/cli/conf.d/99-vccw.ini
 php_fpm_conf: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
+
+php_fpm_socket_path: /run/php/php{{ php_version }}-fpm.sock
