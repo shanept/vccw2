@@ -89,6 +89,8 @@ multisite_options: {}
 #
 force_ssl_admin: false
 wp_debug: true
+wp_debug_log: true
+wp_debug_display: true
 savequeries: false
 
 gitignore: https://raw.githubusercontent.com/github/gitignore/master/WordPress.gitignore
