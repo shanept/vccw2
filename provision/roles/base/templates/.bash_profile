@@ -11,3 +11,5 @@ if [ -d "${HOME}/.bash.d" ] ; then
   done
   unset f
 fi
+
+test -f .bashrc && source .bashrc
