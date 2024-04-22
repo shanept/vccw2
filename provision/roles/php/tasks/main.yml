@@ -73,7 +73,7 @@
     dest: "{{ php_fpm_conf }}"
     backrefs: yes
     regexp: '^(;\s*)?{{ item }}\s*='
-    line: '{{ item }} = {{ apache_user }}'
+    line: '{{ item }} = {{ ansible_env.USER }}'
   with_items:
     - "user"
     - "group"

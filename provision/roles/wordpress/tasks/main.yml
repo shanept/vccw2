@@ -35,8 +35,8 @@
   file:
     path: "{{ wp_path }}"
     state: directory
-    owner: "{{ ansible_env.USER | default( 'ubuntu' ) }}"
-    group: "{{ ansible_env.USER | default( 'ubuntu' ) }}"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
     recurse: yes
 
 - import_tasks: wp-cli.yml

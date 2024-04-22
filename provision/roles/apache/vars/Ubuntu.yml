@@ -1,7 +1,5 @@
 ---
 
-apache_user: "{{ ansible_env.USER | default( 'ubuntu' ) }}"
-
 apache_service_name: apache2
 
 apache_packages:
