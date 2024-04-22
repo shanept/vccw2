@@ -1,4 +1,5 @@
 {
+  "_comment": "{{ ansible_managed }}",
   "config": {
     "secure-http": false
   }

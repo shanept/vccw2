@@ -1,4 +1,7 @@
 <?php
+/**
+ * {{ ansible_managed }}
+ */
 
 if ( ! class_exists( 'WP_CLI' ) ) {
 	return;

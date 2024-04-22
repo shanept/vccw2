@@ -1,3 +1,7 @@
+#
+# {{ ansible_managed }}
+#
+
 require:
   - wp-cli/browse-command.php
 @{{ vccw.hostname }}:

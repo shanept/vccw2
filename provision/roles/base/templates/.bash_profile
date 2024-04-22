@@ -1,5 +1,5 @@
 #
-# The .bash_profile for VCCW
+# {{ ansible_managed }}
 #
 
 export LC_ALL=en_US.UTF-8

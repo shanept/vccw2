@@ -1,5 +1,5 @@
 #
-# Environments settings for the VCCW
+# {{ ansible_managed }}
 #
 
 # For WP-CLI package tests

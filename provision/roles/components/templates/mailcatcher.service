@@ -1,3 +1,7 @@
+#
+# {{ ansible_managed }}
+#
+
 [Unit]
  Description=Mailcatcher Service
 
