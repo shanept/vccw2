@@ -28,7 +28,8 @@
 - name: Download PHP
   become: yes
   action: >
-    {{ ansible_pkg_mgr }} name={{ php_packages | mandatory }} state=present update_cache=yes
+    {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  with_items: "{{ php_packages }}"
 
 - name: Start PHP-FPM service
   become: yes
