@@ -25,7 +25,7 @@
   gem:
     name: "{{ item }}"
     user_install: yes
-  when: item != "wordmove"
+  when: item != "wordmove" && item != ""
   with_items: "{{ vccw.ruby_gems | default([]) }}"
   ignore_errors: yes
 
