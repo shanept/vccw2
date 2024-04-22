@@ -1,0 +1,31 @@
+---
+
+- name: Check for LTS
+  set_fact:
+    is_lts: "{{ ansible_lsb.description is regex('LTS$') }}"
+
+- name: Purge pre-installed PHP packages
+  become: yes
+  ansible.builtin.apt:
+    name: php*
+    state: absent
+    purge: true
+
+- name: Add PHP Repository
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+    update_cache: true
+    state: present
+  environment:
+    LC_ALL: "C.UTF-8"
+  when: is_lts
+
+- name: Output warning for non-LTS
+  fail:
+    msg: >-
+      The version of Ubuntu you are using is non-LTS.
+      To use ppa:ondrej/php you must use LTS.
+      Multiple PHP versions will be unavailable to you.
+  ignore_errors: true
+  when: not is_lts
