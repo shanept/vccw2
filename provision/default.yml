@@ -4,7 +4,7 @@
 #
 # General Settings
 #
-wp_box: ubuntu/mantic64
+wp_box: ubuntu/noble64
 php_version: "8.2"
 composer_version: "latest"
 
