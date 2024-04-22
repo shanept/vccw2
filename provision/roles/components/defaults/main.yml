@@ -1,0 +1,4 @@
+---
+
+phpmyadmin_url: "https://files.phpmyadmin.net/phpMyAdmin/5.1.4/phpMyAdmin-5.1.4-all-languages.zip"
+phpmyadmin_path: /usr/share/phpmyadmin

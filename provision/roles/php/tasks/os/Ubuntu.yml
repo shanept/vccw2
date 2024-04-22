@@ -4,12 +4,12 @@
   set_fact:
     is_lts: "{{ ansible_lsb.description is regex('LTS$') }}"
 
-- name: Purge pre-installed PHP packages
-  become: yes
-  ansible.builtin.apt:
-    name: php*
-    state: absent
-    purge: true
+#- name: Purge pre-installed PHP packages
+#  become: yes
+#  ansible.builtin.apt:
+#    name: php*
+#    state: absent
+#    purge: true
 
 - name: Add PHP Repository
   become: yes

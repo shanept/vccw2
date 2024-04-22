@@ -1,22 +1,47 @@
 ---
 
-# Install PHPMyAdmin
-- name: Install PHPMyAdmin
-  become: yes
-  action: >
-    {{ ansible_pkg_mgr }} name={{ phpmyadmin_packages | mandatory }} state=present update_cache=yes
+- name: Check if PhpMyAdmin is installed
+  stat:
+    path: "{{ phpmyadmin_path }}/config.inc.php"
+  register: pma_config_path
 
-- name: Symlink PHPMyAdmin VirtualHost
+- name: Create PhpMyAdmin directory
   become: yes
   file:
-    src: /etc/phpmyadmin/apache.conf
-    dest: /etc/apache2/conf-available/phpmyadmin.conf
-    state: link
-  notify:
-    - restart apache
+    path: "{{ phpmyadmin_path }}"
+    state: "directory"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
 
-- name: Enable PHPMyAdmin VirtualHost
-  become: yes
-  command: a2enconf phpmyadmin.conf
-  notify:
-    - restart apache
+- name: Install PhpMyAdmin
+  when: "not pma_config_path.stat.exists"
+  block:
+  - name: Download PhpMyAdmin
+    unarchive:
+      remote_src: true
+      src: "{{ phpmyadmin_url }}"
+      dest: "{{ phpmyadmin_path }}"
+      owner: "{{ ansible_env.USER }}"
+      group: "{{ ansible_env.USER }}"
+
+  - name: Move PhpMyAdmin to the correct directory
+    copy:
+      src: "{{ phpmyadmin_path }}/{{ basename(phpmyadmin_path) | replace('.zip', '') }}/"
+      dest: "{{ phpmyadmin_path }}/"
+
+  - name: Create Blowfish secret
+    set_fact:
+      pma_blowfish_secret: "{{ lookup('ansible.builtin.password', '/dev/null', length=32) }}"
+
+  - name: Setup config.inc.php
+    template:
+      src: phpmyadmin-config.php
+      dest: "{{ phpmyadmin_path }}/config.inc.php"
+
+  - name: Configure PHPMyAdmin with Apache
+    become: yes
+    template:
+      src: phpmyadmin.conf
+      dest: "{{ apache_configs_dir }}/phpmyadmin.conf"
+    notify:
+      - restart apache
