@@ -16,6 +16,7 @@
     password: "{{ vccw.db_admin_pass | default(vccw.db_pass) }}"
     priv: "*.*:ALL,GRANT"
     host: "localhost"
+    column_case_sensitive: false
     state: present
 
 - name: Create MySQL user
@@ -26,6 +27,7 @@
     password: "{{ vccw.db_pass }}"
     priv: "{{ vccw.db_name }}.*:ALL"
     host: "%"
+    column_case_sensitive: false
     state: present
 
 - name: "Change owner of the {{ wp_path }}"
