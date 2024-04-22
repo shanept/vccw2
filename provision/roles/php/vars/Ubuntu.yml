@@ -15,6 +15,7 @@ php_packages:
  - php{{ php_version }}-pcov
  - php{{ php_version }}-xdebug
  - php{{ php_version }}-xml
+ - php{{ php_version }}-zip
 
 php_ini: /etc/php/{{ php_version }}/apache2/conf.d/99-vccw.ini
 php_ini_cli: /etc/php/{{ php_version }}/cli/conf.d/99-vccw.ini

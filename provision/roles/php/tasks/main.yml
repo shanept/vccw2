@@ -29,6 +29,7 @@
   become: yes
   action: >
     {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+  ignore_errors: true
   with_items: "{{ php_packages }}"
 
 - name: Start PHP-FPM service
