@@ -8,6 +8,16 @@
     name: "{{ vccw.db_name }}"
     state: present
 
+- name: Add Admin user (with grant option)
+  become: yes
+  mysql_user:
+    login_unix_socket: "{{ mysql_socket }}"
+    name: "admin"
+    password: "{{ vccw.db_admin_pass | default(vccw.db_pass) }}"
+    priv: "*.*:ALL,GRANT"
+    host: "localhost"
+    state: present
+
 - name: Create MySQL user
   become: yes
   mysql_user:
